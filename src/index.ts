@@ -1,17 +1,4 @@
-const response = (): {
-    data: Record<string, any>,
-    messages: Record<string, string[]>
-} => {
-    return {
-        data: {},
-        messages: {
-            error: [],
-            success: [],
-            info: [],
-            warning: []
-        }
-    };
-};
+import response from './response';
 
 
 export default { response };
