@@ -1,5 +1,5 @@
-import response, { Response } from './response';
+import response from './response';
 
 
-export default { response, Response };
-export { response, Response };
+export default { response };
+export { response };
