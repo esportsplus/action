@@ -3,6 +3,11 @@ class Response {
     messages: Record<string, [string, number | undefined][]> = {};
 
 
+    constructor(data: Response['data']) {
+        this.data = data;
+    }
+
+
     error(message: string, seconds?: number) {
         this.messages.errors.push([message, seconds]);
     }
@@ -21,5 +26,14 @@ class Response {
 }
 
 
-export default () => new Response();
+export default ({ data }: {
+    data?: Response['data'],
+    errors?: { message: string, path: (string | number) }[]
+} = {}) => {
+    let response = new Response(data || {});
+
+    // Parse validation errors once you decide on inline errors vs floating alert message or both?
+
+    return response;
+};
 export { Response };
