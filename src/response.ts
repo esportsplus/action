@@ -29,7 +29,7 @@ class Response<T extends Payload<T>> {
 }
 
 
-export default <T extends Payload<T>>(payload: T) => {
+export default <T extends Payload<T>>(payload: T): Response<T> => {
     let response = new Response(payload);
 
     // Parse validation errors once you decide on inline errors vs floating alert message or both?
