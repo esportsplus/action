@@ -1,9 +1,12 @@
-class Response {
-    data: Record<string, any> = {};
+import { Payload } from './types';
+
+
+class Response<T extends Payload<T>> {
+    data: T;
     messages: Record<string, [string, number | undefined][]> = {};
 
 
-    constructor(data: Response['data']) {
+    constructor(data: T) {
         this.data = data;
     }
 
@@ -26,11 +29,8 @@ class Response {
 }
 
 
-export default ({ data }: {
-    data?: Response['data'],
-    errors?: { message: string, path: (string | number) }[]
-} = {}) => {
-    let response = new Response(data || {});
+export default <T extends Payload<T>>(payload: T) => {
+    let response = new Response(payload);
 
     // Parse validation errors once you decide on inline errors vs floating alert message or both?
 
