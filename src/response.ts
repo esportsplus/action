@@ -2,12 +2,12 @@ import { Payload } from './types';
 
 
 class Response<T extends Payload<T>> {
-    data: T;
+    data: T['data'];
     messages: Record<string, [string, number | undefined][]> = {};
 
 
-    constructor(data: T) {
-        this.data = data;
+    constructor(payload: T) {
+        this.data = payload.data || {};
     }
 
 
