@@ -29,11 +29,6 @@ class Response<T extends Payload<T>> {
 }
 
 
-export default <T extends Payload<T>>(payload: T): Response<T> => {
-    let response = new Response(payload);
-
-    // Parse validation errors once you decide on inline errors vs floating alert message or both?
-
-    return response;
-};
+// Parse validation errors once you decide on inline errors vs floating alert message or both?
+export default <T extends Payload<T>>(payload: T) => new Response(payload);
 export { Response };
