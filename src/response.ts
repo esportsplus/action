@@ -3,37 +3,43 @@ import { Payload } from './types';
 
 class Response<T extends Payload<T>> {
     data: T['data'];
-    messages: Record<string, [string, number | undefined][]> = {
-        errors: [],
+    errors: Record<string,any>[];
+    messages: Record<string, string[]> = {
+        error: [],
         info: [],
         success: [],
         warning: []
     };
 
 
-    constructor(payload: T) {
-        this.data = payload.data || {};
+    constructor({ data, errors }: T) {
+        this.data = data || {};
+        this.errors = errors || [];
     }
 
 
-    error(message: string, seconds?: number) {
-        this.messages.errors.push([message, seconds]);
+    get failed() {
+        return this.errors.length > 0 || this.messages.error.length > 0;
     }
 
-    info(message: string, seconds?: number) {
-        this.messages.info.push([message, seconds]);
+
+    error(...messages: string[]) {
+        this.messages.error.push(...messages);
     }
 
-    success(message: string, seconds?: number) {
-        this.messages.success.push([message, seconds]);
+    info(...messages: string[]) {
+        this.messages.info.push(...messages);
     }
 
-    warning(message: string, seconds?: number) {
-        this.messages.warning.push([message, seconds]);
+    success(...messages: string[]) {
+        this.messages.success.push(...messages);
+    }
+
+    warning(...messages: string[]) {
+        this.messages.warning.push(...messages);
     }
 }
 
 
-// Parse validation errors once you decide on inline errors vs floating alert message or both?
-export default <T extends Payload<T>>(payload: T) => new Response(payload);
+export default <T extends Payload<T>>(data: T = {} as T) => new Response(data);
 export { Response };
