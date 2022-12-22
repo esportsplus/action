@@ -22,21 +22,29 @@ class Response<T extends Payload<T>> {
         return this.errors.length > 0 || this.messages.error.length > 0;
     }
 
+    get passed() {
+        return !this.failed;
+    }
+
 
     error(...messages: string[]) {
         this.messages.error.push(...messages);
+        return this;
     }
 
     info(...messages: string[]) {
         this.messages.info.push(...messages);
+        return this;
     }
 
     success(...messages: string[]) {
         this.messages.success.push(...messages);
+        return this;
     }
 
     warning(...messages: string[]) {
         this.messages.warning.push(...messages);
+        return this;
     }
 }
 
