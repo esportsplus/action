@@ -18,12 +18,8 @@ class Response<T extends Payload<T>> {
     }
 
 
-    get failed() {
-        return this.errors.length > 0 || this.messages.error.length > 0;
-    }
-
-    get passed() {
-        return !this.failed;
+    get ok() {
+        return (this.errors.length + this.messages.error.length) === 0;
     }
 
 
