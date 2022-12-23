@@ -1,9 +1,13 @@
-import { Payload } from './types';
+class Response<T extends Record<string, unknown>> {
+    private okay?: boolean;
 
 
-class Response<T extends Payload<T>> {
-    data: T['data'];
-    errors: Record<string,any>[];
+    // Data bucket
+    data: T;
+    // Input validation errors
+    // - UI determines when/where/how to display these errors ( if at all )
+    errors: { message: string, path: (string | number) }[];
+    // Alert messages
     messages: Record<string, string[]> = {
         error: [],
         info: [],
@@ -12,14 +16,22 @@ class Response<T extends Payload<T>> {
     };
 
 
-    constructor({ data, errors }: T) {
+    constructor(data: T, errors?: Response<any>['errors']) {
         this.data = data || {};
         this.errors = errors || [];
     }
 
 
     get ok() {
+        if (this.okay !== undefined) {
+            return this.okay;
+        }
+
         return (this.errors.length + this.messages.error.length) === 0;
+    }
+
+    set ok(value: boolean) {
+        this.okay = value;
     }
 
 
@@ -45,5 +57,7 @@ class Response<T extends Payload<T>> {
 }
 
 
-export default <T extends Payload<T>>(data: T = {} as T) => new Response(data);
+export default <T extends Record<string, unknown>>(data: T, errors?: Response<T>['errors']) => {
+    return new Response(data, errors);
+};
 export { Response };
