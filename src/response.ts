@@ -7,8 +7,8 @@ class Response<T> {
     // Input validation errors
     // - UI determines when/where/how to display these errors ( if at all )
     input = {
-        error: function(...errors: { message: string, path: (string | number) }[]) {
-            this.errors.push(...errors);
+        error: function(error: { message: string, path: (string | number) }) {
+            this.errors.push(error);
             return this;
         },
         errors: [] as { message: string, path: (string | number) }[]
@@ -40,23 +40,23 @@ class Response<T> {
     }
 
 
-    error(...messages: string[]) {
-        this.messages.error.push(...messages);
+    error(messages: string) {
+        this.messages.error.push(messages);
         return this;
     }
 
-    info(...messages: string[]) {
-        this.messages.info.push(...messages);
+    info(messages: string) {
+        this.messages.info.push(messages);
         return this;
     }
 
-    success(...messages: string[]) {
-        this.messages.success.push(...messages);
+    success(messages: string) {
+        this.messages.success.push(messages);
         return this;
     }
 
-    warning(...messages: string[]) {
-        this.messages.warning.push(...messages);
+    warning(messages: string) {
+        this.messages.warning.push(messages);
         return this;
     }
 }
