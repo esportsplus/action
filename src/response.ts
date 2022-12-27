@@ -62,7 +62,7 @@ class Response<T> {
 }
 
 
-export default <T>(data: T, errors: { message: string, path: (string | number) }[]) => {
+export default <T>(data: T, errors?: { message: string, path: (string | number) }[]) => {
     let response = new Response(data);
 
     if (errors) {
