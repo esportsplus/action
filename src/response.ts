@@ -4,7 +4,7 @@ class Response<T> {
 
     // Data bucket
     data: T;
-    // Input validation errors
+    // Input errors
     // - UI determines when/where/how to display these errors ( if at all )
     input = {
         error: function(error: { message: string, path: (string | number) }) {
@@ -62,5 +62,13 @@ class Response<T> {
 }
 
 
-export default <T>(data: T) => new Response(data);
+export default <T>(data: T, errors: { message: string, path: (string | number) }[]) => {
+    let response = new Response(data);
+
+    if (errors) {
+        response.input.errors = errors;
+    }
+
+    return response;
+};
 export { Response };
