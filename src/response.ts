@@ -1,4 +1,4 @@
-class Response<T extends Record<string, unknown>> {
+class Response<T> {
     private okay?: boolean;
 
 
@@ -6,7 +6,13 @@ class Response<T extends Record<string, unknown>> {
     data: T;
     // Input validation errors
     // - UI determines when/where/how to display these errors ( if at all )
-    errors: { message: string, path: (string | number) }[];
+    input = {
+        error: function(...errors: { message: string, path: (string | number) }[]) {
+            this.errors.push(...errors);
+            return this;
+        },
+        errors: [] as { message: string, path: (string | number) }[]
+    };
     // Alert messages
     messages: Record<string, string[]> = {
         error: [],
@@ -16,9 +22,8 @@ class Response<T extends Record<string, unknown>> {
     };
 
 
-    constructor(data: T, errors?: Response<any>['errors']) {
-        this.data = data || {};
-        this.errors = errors || [];
+    constructor(data: T) {
+        this.data = data || {} as T;
     }
 
 
@@ -27,7 +32,7 @@ class Response<T extends Record<string, unknown>> {
             return this.okay;
         }
 
-        return (this.errors.length + this.messages.error.length) === 0;
+        return (this.input.errors.length + this.messages.error.length) === 0;
     }
 
     set ok(value: boolean) {
@@ -57,7 +62,5 @@ class Response<T extends Record<string, unknown>> {
 }
 
 
-export default <T extends Record<string, unknown>>(data: T, errors?: Response<T>['errors']) => {
-    return new Response(data, errors);
-};
+export default <T>(data: T) => new Response(data);
 export { Response };
