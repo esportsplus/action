@@ -23,7 +23,7 @@ class Response<T> {
 
 
     constructor(data: T) {
-        this.data = data || {} as T;
+        this.data = data;
     }
 
 
@@ -62,8 +62,8 @@ class Response<T> {
 }
 
 
-export default <T>(data: T, errors?: { message: string, path: (string | number) }[]) => {
-    let response = new Response(data);
+export default <T>(data?: T, errors?: { message: string, path: (string | number) }[]) => {
+    let response = new Response(data || {});
 
     if (errors) {
         response.input.errors = errors;
