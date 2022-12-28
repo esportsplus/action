@@ -62,8 +62,8 @@ class Response<T> {
 }
 
 
-export default <T>(data?: T, errors?: { message: string, path: (string | number) }[]) => {
-    let response = new Response(data || {});
+export default <T = Record<string, unknown>>(data?: T, errors?: { message: string, path: (string | number) }[]) => {
+    let response = new Response(data || {} as T);
 
     if (errors) {
         response.input.errors = errors;
