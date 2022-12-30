@@ -1,3 +1,9 @@
+type Error = {
+    message: string;
+    path: string | number;
+};
+
+
 class Response<T> {
     private okay?: boolean;
 
@@ -8,7 +14,7 @@ class Response<T> {
     // Input errors ( validation + manual input errors )
     // - UI determines when/where/how to display these errors ( if at all )
     input = {
-        error: [] as { message: string, path: (string | number) }[]
+        error: [] as Error[]
     };
 
     // Alert messages
@@ -20,7 +26,7 @@ class Response<T> {
     };
 
 
-    constructor(data: T, errors?: { message: string, path: (string | number) }[]) {
+    constructor(data: T, errors?: Error[]) {
         this.data = data;
         this.input = {
             error: errors || []
@@ -41,12 +47,12 @@ class Response<T> {
     }
 
 
-    error(message: string, path?: number | string) {
-        if (path) {
-            this.input.error.push({ message, path });
+    error(message: string | Error) {
+        if (typeof message === 'string') {
+            this.messages.error.push(message);
         }
         else {
-            this.messages.error.push(message);
+            this.input.error.push(message);
         }
 
         return this;
@@ -69,7 +75,7 @@ class Response<T> {
 }
 
 
-export default <T = Record<string, unknown>>(data?: T, errors?: { message: string, path: (string | number) }[]) => {
+export default <T = Record<string, unknown>>(data?: T, errors?: Error[]) => {
     return new Response(data || {} as T, errors);
 };
 export { Response };
