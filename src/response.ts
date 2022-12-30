@@ -4,15 +4,13 @@ class Response<T> {
 
     // Data bucket
     data: T;
-    // Input errors
+
+    // Input errors ( validation + manual input errors )
     // - UI determines when/where/how to display these errors ( if at all )
     input = {
-        error: function(error: { message: string, path: (string | number) }) {
-            this.errors.push(error);
-            return this;
-        },
         errors: [] as { message: string, path: (string | number) }[]
     };
+
     // Alert messages
     messages: Record<string, string[]> = {
         error: [],
@@ -22,8 +20,11 @@ class Response<T> {
     };
 
 
-    constructor(data: T) {
+    constructor(data: T, errors?: { message: string, path: (string | number) }[]) {
         this.data = data;
+        this.input = {
+            errors: errors || []
+        };
     }
 
 
@@ -40,35 +41,34 @@ class Response<T> {
     }
 
 
-    error(messages: string) {
-        this.messages.error.push(messages);
+    error(message: string) {
+        this.messages.error.push(message);
         return this;
     }
 
-    info(messages: string) {
-        this.messages.info.push(messages);
+    info(message: string) {
+        this.messages.info.push(message);
         return this;
     }
 
-    success(messages: string) {
-        this.messages.success.push(messages);
+    invalid(key: number | string, message: string) {
+        this.input.errors.push({ message, path: key });
         return this;
     }
 
-    warning(messages: string) {
-        this.messages.warning.push(messages);
+    success(message: string) {
+        this.messages.success.push(message);
+        return this;
+    }
+
+    warning(message: string) {
+        this.messages.warning.push(message);
         return this;
     }
 }
 
 
 export default <T = Record<string, unknown>>(data?: T, errors?: { message: string, path: (string | number) }[]) => {
-    let response = new Response(data || {} as T);
-
-    if (errors) {
-        response.input.errors = errors;
-    }
-
-    return response;
+    return new Response(data || {} as T, errors);
 };
 export { Response };
