@@ -1,12 +1,4 @@
-type Error = {
-    message: string;
-    path: string | number;
-};
-
-
-function factory<T = Record<string, unknown>>(data?: T, errors?: Error[]) {
-    return new Response(data || {} as T, errors);
-};
+import { Error, ErrorTypes } from './types';
 
 
 class Response<T> {
@@ -16,11 +8,9 @@ class Response<T> {
     // Data bucket
     data: T;
 
-    // Input errors ( validation + manual input errors )
+    // Validation + manual input errors
     // - UI determines when/where/how to display these errors ( if at all )
-    input = {
-        errors: [] as Error[]
-    };
+    errors: Error[] = [];
 
     // Alert messages
     messages: Record<string, string[]> = {
@@ -31,11 +21,12 @@ class Response<T> {
     };
 
 
-    constructor(data: T, errors?: Error[]) {
+    constructor(data: T, errors?: ErrorTypes[]) {
         this.data = data;
-        this.input = {
-            errors: errors || []
-        };
+
+        for (let error in (errors || [])) {
+            this.error(error);
+        }
     }
 
 
@@ -44,7 +35,7 @@ class Response<T> {
             return this.okay;
         }
 
-        return (this.input.errors.length + this.messages.error.length) === 0;
+        return (this.errors.length + this.messages.error.length) === 0;
     }
 
     set ok(value: boolean) {
@@ -52,36 +43,56 @@ class Response<T> {
     }
 
 
-    error(message: string | Error) {
-        if (typeof message === 'string') {
-            this.messages.error.push(message);
+    error(value: ErrorTypes) {
+        if (typeof value === 'string') {
+            this.messages.error.push(value);
         }
         else {
-            this.input.errors.push(message);
+            this.errors.push({
+                message: value.message,
+                path: value.path
+            });
         }
 
         return this;
     }
 
-    fork<U>(data?: U, errors?: Error[]) {
-        return factory(data || this.data, errors || this.input.errors);
+    fork<T>(data: T, everything = false) {
+        let response = factory(data, this.errors);
+
+        if (everything) {
+            if (this.ok !== undefined) {
+                response.ok = this.ok;
+            }
+
+            for (let key in this.messages) {
+                response.messages[key] = [...this.messages[key]];
+            }
+        }
+
+        return response;
     }
 
-    info(message: string) {
-        this.messages.info.push(message);
+    info(value: string) {
+        this.messages.info.push(value);
         return this;
     }
 
-    success(message: string) {
-        this.messages.success.push(message);
+    success(value: string) {
+        this.messages.success.push(value);
         return this;
     }
 
-    warning(message: string) {
-        this.messages.warning.push(message);
+    warning(value: string) {
+        this.messages.warning.push(value);
         return this;
     }
 }
+
+
+const factory = <T = Record<string, unknown>>(data?: T, errors?: ErrorTypes[]) => {
+    return new Response(data || {} as T, errors);
+};
 
 
 export default factory;
