@@ -4,6 +4,11 @@ type Error = {
 };
 
 
+function factory<T = Record<string, unknown>>(data?: T, errors?: Error[]) {
+    return new Response(data || {} as T, errors);
+};
+
+
 class Response<T> {
     private okay?: boolean;
 
@@ -14,7 +19,7 @@ class Response<T> {
     // Input errors ( validation + manual input errors )
     // - UI determines when/where/how to display these errors ( if at all )
     input = {
-        error: [] as Error[]
+        errors: [] as Error[]
     };
 
     // Alert messages
@@ -29,7 +34,7 @@ class Response<T> {
     constructor(data: T, errors?: Error[]) {
         this.data = data;
         this.input = {
-            error: errors || []
+            errors: errors || []
         };
     }
 
@@ -39,7 +44,7 @@ class Response<T> {
             return this.okay;
         }
 
-        return (this.input.error.length + this.messages.error.length) === 0;
+        return (this.input.errors.length + this.messages.error.length) === 0;
     }
 
     set ok(value: boolean) {
@@ -52,10 +57,14 @@ class Response<T> {
             this.messages.error.push(message);
         }
         else {
-            this.input.error.push(message);
+            this.input.errors.push(message);
         }
 
         return this;
+    }
+
+    fork<U>(data?: U, errors?: Error[]) {
+        return factory(data || this.data, errors || this.input.errors);
     }
 
     info(message: string) {
@@ -75,7 +84,5 @@ class Response<T> {
 }
 
 
-export default <T = Record<string, unknown>>(data?: T, errors?: Error[]) => {
-    return new Response(data || {} as T, errors);
-};
+export default factory;
 export { Response };
