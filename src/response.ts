@@ -24,7 +24,7 @@ class Response<T> {
     constructor(data: T, errors?: ErrorTypes[]) {
         this.data = data;
 
-        for (let error in (errors || [])) {
+        for (let error of (errors || [])) {
             this.error(error);
         }
     }
