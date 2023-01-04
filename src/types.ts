@@ -3,7 +3,5 @@ type Error = {
     path: string | number;
 };
 
-type ErrorTypes = Error | string;
 
-
-export { Error, ErrorTypes }
+export { Error };

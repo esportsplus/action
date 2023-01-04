@@ -1,4 +1,4 @@
-import { Error, ErrorTypes } from './types';
+import { Error } from './types';
 
 
 class Response<T> {
@@ -12,21 +12,10 @@ class Response<T> {
     // - UI determines when/where/how to display these errors ( if at all )
     errors: Error[] = [];
 
-    // Alert messages
-    messages: Record<string, string[]> = {
-        error: [],
-        info: [],
-        success: [],
-        warning: []
-    };
 
-
-    constructor(data: T, errors?: ErrorTypes[]) {
+    constructor(data: T, errors?: Error[]) {
         this.data = data;
-
-        for (let error of (errors || [])) {
-            this.error(error);
-        }
+        this.errors = errors || [];
     }
 
 
@@ -35,7 +24,7 @@ class Response<T> {
             return this.okay;
         }
 
-        return (this.errors.length + this.messages.error.length) === 0;
+        return this.errors.length === 0;
     }
 
     set ok(value: boolean) {
@@ -43,54 +32,28 @@ class Response<T> {
     }
 
 
-    error(value: ErrorTypes) {
-        if (typeof value === 'string') {
-            this.messages.error.push(value);
-        }
-        else {
-            this.errors.push({
-                message: value.message,
-                path: value.path
-            });
-        }
+    error(value: Error) {
+        this.errors.push({
+            message: value.message,
+            path: value.path
+        });
 
         return this;
     }
 
-    fork<T>(data: T, everything = false) {
+    fork<T>(data: T) {
         let response = factory(data, this.errors);
 
-        if (everything) {
-            if (this.ok !== undefined) {
-                response.ok = this.ok;
-            }
-
-            for (let key in this.messages) {
-                response.messages[key] = [...this.messages[key]];
-            }
+        if (this.ok !== undefined) {
+            response.ok = this.ok;
         }
 
         return response;
     }
-
-    info(value: string) {
-        this.messages.info.push(value);
-        return this;
-    }
-
-    success(value: string) {
-        this.messages.success.push(value);
-        return this;
-    }
-
-    warning(value: string) {
-        this.messages.warning.push(value);
-        return this;
-    }
 }
 
 
-const factory = <T = Record<string, unknown>>(data?: T, errors?: ErrorTypes[]) => {
+const factory = <T = Record<string, unknown>>(data?: T, errors?: Error[]) => {
     return new Response(data || {} as T, errors);
 };
 
