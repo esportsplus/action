@@ -50,6 +50,13 @@ class Response<T> {
 
         return response;
     }
+
+    toJSON() {
+        return {
+            data: this.data,
+            errors: this.errors
+        };
+    }
 }
 
 
