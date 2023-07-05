@@ -54,7 +54,8 @@ class Response<T> {
     toJSON() {
         return {
             data: this.data,
-            errors: this.errors
+            errors: this.errors,
+            ok: this.ok
         };
     }
 }
