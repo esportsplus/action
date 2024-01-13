@@ -21,7 +21,7 @@ class Response<T> {
         return this;
     }
 
-    fork(data: T) {
+    fork<T>(data: T) {
         return new Response<T>(data, this.errors);
     }
 
