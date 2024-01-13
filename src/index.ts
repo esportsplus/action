@@ -1,9 +1,6 @@
-class Response<T extends Record<PropertyKey, unknown>> {
+class Response<T> {
     data: T;
-    errors: {
-        message: string;
-        path: string | number;
-    }[] = [];
+    errors: { message: string, path: string | number }[] = [];
     ok = true;
 
 
@@ -38,7 +35,7 @@ class Response<T extends Record<PropertyKey, unknown>> {
 }
 
 
-export default function factory<T extends Record<PropertyKey, unknown>>(data?: T, errors?: Response<T>['errors']) {
-    return new Response(data || {} as T, errors);
+export default <T>(data?: T, errors?: Response<T>['errors']) => {
+    return new Response(data, errors);
 };
 export { Response };
