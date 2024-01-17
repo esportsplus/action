@@ -1,6 +1,6 @@
 class Response<T> {
     data: T;
-    errors: { message: string, path: string | number }[] = [];
+    errors: { message: string, path?: string | number }[] = [];
     ok = true;
 
 
@@ -15,7 +15,7 @@ class Response<T> {
 
 
     error({ message, path }: Response<T>['errors'][0]) {
-        this.errors.push({ message, path });
+        this.errors.push(path ? { message, path } : { message });
         this.ok = false;
 
         return this;
