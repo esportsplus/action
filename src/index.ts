@@ -15,7 +15,7 @@ class Response<T> {
 
 
     error({ message, path }: Response<T>['errors'][0]) {
-        this.errors.push(path != undefined ? { message, path } : { message });
+        this.errors.push(path == undefined ? { message } : { message, path });
         this.ok = false;
 
         return this;
