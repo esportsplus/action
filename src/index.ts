@@ -14,7 +14,18 @@ class Response<T> {
     }
 
 
-    error({ message, path }: Response<T>['errors'][0]) {
+    error(input: Response<T>['errors'][0] | string) {
+        let message,
+            path;
+
+        if (typeof input === 'string') {
+            message = input;
+        }
+        else {
+            message = input.message;
+            path = input.path;
+        }
+
         this.errors.push(path == undefined ? { message } : { message, path });
         this.ok = false;
 
