@@ -6,24 +6,24 @@ class Response<T> {
 
     constructor(data: T, errors?: Response<T>['errors']) {
         this.data = data;
-        this.errors = errors || [];
 
         if (errors) {
+            this.errors = errors;
             this.ok = errors.length === 0;
         }
     }
 
 
-    error(input: Response<T>['errors'][0] | string) {
+    error(error: Response<T>['errors'][0] | string) {
         let message,
             path;
 
-        if (typeof input === 'string') {
-            message = input;
+        if (typeof error === 'string') {
+            message = error;
         }
         else {
-            message = input.message;
-            path = input.path;
+            message = error.message;
+            path = error.path;
         }
 
         this.errors.push(path == undefined ? { message } : { message, path });
