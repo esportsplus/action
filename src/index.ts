@@ -49,4 +49,4 @@ class Response<T> {
 export default <T>(data?: T, errors?: Response<T>['errors']) => {
     return new Response(data, errors);
 };
-export { Response };
+export type { Response };
