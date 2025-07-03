@@ -46,9 +46,9 @@ class Response<T> {
 }
 
 
-async function factory(): Promise<Response<undefined>>;
-async function factory<T>(data: T, errors?: Response<T>['errors']): Promise<Response<T>>;
-async function factory<T>(data?: T, errors?: Response<T>['errors']): Promise<Response<T | undefined>> {
+function factory(): Response<undefined>;
+function factory<T>(data: T, errors?: Response<T>['errors']): Response<T>;
+function factory<T>(data?: T, errors?: Response<T>['errors']): Response<T | undefined> {
     return new Response(data, errors);
 }
 
