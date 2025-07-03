@@ -14,7 +14,7 @@ class Response<T> {
     }
 
 
-    error(error: Response<T>['errors'][0] | string) {
+    error(error: Response<T>['errors'][0] | string): Response<T> {
         let message,
             path;
 
@@ -32,7 +32,7 @@ class Response<T> {
         return this;
     }
 
-    fork<T>(data: T) {
+    fork<T>(data: T): Response<T> {
         return new Response<T>(data, this.errors);
     }
 
@@ -46,7 +46,12 @@ class Response<T> {
 }
 
 
-export default <T>(data?: T, errors?: Response<T>['errors']) => {
+async function factory(): Promise<Response<undefined>>;
+async function factory<T>(data: T, errors?: Response<T>['errors']): Promise<Response<T>>;
+async function factory<T>(data?: T, errors?: Response<T>['errors']): Promise<Response<T | undefined>> {
     return new Response(data, errors);
-};
+}
+
+
+export default factory;
 export type { Response };
