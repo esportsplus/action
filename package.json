@@ -5,6 +5,10 @@
     },
     "main": "build/index.js",
     "name": "@esportsplus/action",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/esportsplus/action"
+    },
     "scripts": {
         "build": "tsc && tsc-alias",
         "-": "-",
