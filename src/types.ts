@@ -20,4 +20,4 @@ interface ResponseOk<T, F = undefined> extends ResponseMethods<T, F> {
 type Response<T, F = undefined> = ResponseOk<T, F> | ResponseFail<T, F>;
 
 
-export type { Response, ResponseError };
+export type { Response, ResponseError, ResponseFail, ResponseOk };
