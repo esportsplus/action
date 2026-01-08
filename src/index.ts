@@ -1,4 +1,4 @@
-import type { Response as R, ResponseError } from './types';
+import type { Response as API, ResponseError } from './types';
 
 
 class Response<T, F = undefined> {
@@ -17,7 +17,7 @@ class Response<T, F = undefined> {
     }
 
 
-    error(error: ResponseError | string): R<T, F> {
+    error(error: ResponseError | string): API<T, F> {
         let message,
             path;
 
@@ -32,11 +32,11 @@ class Response<T, F = undefined> {
         this.errors.push(path == undefined ? { message } : { message, path });
         this.ok = false;
 
-        return this as unknown as R<T, F>;
+        return this as unknown as API<T, F>;
     }
 
-    fork<U, V = undefined>(data: U | V): R<U, V> {
-        return new Response<U, V>(data, this.errors) as unknown as R<U, V>;
+    fork<U, V = undefined>(data: U | V): API<U, V> {
+        return new Response<U, V>(data, this.errors) as unknown as API<U, V>;
     }
 
     toJSON() {
@@ -49,13 +49,13 @@ class Response<T, F = undefined> {
 }
 
 
-function factory(): R<undefined>;
-function factory<T>(data: T, errors?: ResponseError[]): R<T>;
-function factory<T, F = undefined>(data: T | F, errors?: ResponseError[]): R<T, F>;
-function factory<T, F = undefined>(data?: T | F, errors?: ResponseError[]): R<T | undefined, F> {
-    return new Response<T | undefined, F>(data, errors) as unknown as R<T | undefined, F>;
+function factory(): API<undefined>;
+function factory<T>(data: T, errors?: ResponseError[]): API<T>;
+function factory<T, F = undefined>(data: T | F, errors?: ResponseError[]): API<T, F>;
+function factory<T, F = undefined>(data?: T | F, errors?: ResponseError[]): API<T | undefined, F> {
+    return new Response<T | undefined, F>(data, errors) as unknown as API<T | undefined, F>;
 }
 
 
 export default factory;
-export type { Response };
+export type { API as Response };
